@@ -89,6 +89,7 @@ jobs:
     runs-on: ubuntu-20.04
     environment: build
     
+    # sleep to replace pre-prepared quat action for demo purpose. image needs to be pushed to quay for real deployments of course
     steps: 
     - name: Build and deploy to quay
       run: |
