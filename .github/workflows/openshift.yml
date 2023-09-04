@@ -84,21 +84,88 @@ jobs:
   #    CRDA_KEY: ${{ secrets.CRDA_KEY }}
       # SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}       # Either use SNYK_TOKEN or CRDA_KEY
 
+#  image-ci-cd:
+#    name: Build and push to quay
+#    runs-on: ubuntu-20.04
+#    environment: build
+    
+    # sleep to replace pre-prepared quat action for demo purpose. image needs to be pushed to quay for real deployments of course
+#    steps: 
+#    - name: Build and deploy to quay
+#      run: |
+#        echo "hi"
+#    - name: Build and push to Quay
+#      uses: juliangruber/sleep-action@v1
+#      with:
+#       time: 17s
+
   image-ci-cd:
     name: Build and push to quay
     runs-on: ubuntu-20.04
     environment: build
+
+    outputs:
+      ROUTE: ${{ steps.deploy-and-expose.outputs.route }}
+      SELECTOR: ${{ steps.deploy-and-expose.outputs.selector }}
+      MSVC_IMAGE: ${{ steps.push-image.outputs.registry-path }}
+      FEND_IMAGE: ${{ steps.push-image-frontend.outputs.registry-path }}
     
-    # sleep to replace pre-prepared quat action for demo purpose. image needs to be pushed to quay for real deployments of course
-    steps: 
-    - name: Build and deploy to quay
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v3
+    
+    - name: Determine app name
+      if: env.APP_NAME == ''
       run: |
-        echo "hi"
-    - name: Build and push to Quay
-      uses: juliangruber/sleep-action@v1
+        echo "APP_NAME=$(basename $PWD)" | tee -a $GITHUB_ENV
+
+    - name: Determine image tags
+      if: env.IMAGE_TAGS == ''
+      run: |
+        echo "IMAGE_TAGS=latest ${GITHUB_SHA::12}" | tee -a $GITHUB_ENV
+
+    # https://github.com/redhat-actions/buildah-build#readme
+    - name: Build from Dockerfile
+      id: build_image_msvc
+      uses: redhat-actions/s2i-build@v2
       with:
-       time: 17s
+        path_context: 'microservice'
+        builder_image: 'registry.access.redhat.com/ubi8/nodejs-16'
+        image: 'gmidha/ostoy-microservice'
     
+        #Setup S2i and Build Frontend container image
+    - name: Steup and Build
+      id: build_image_frontend
+      uses: redhat-actions/s2i-build@v2
+      with:
+        path_context: './'
+        builder_image: 'registry.access.redhat.com/ubi8/nodejs-16'
+        image: 'gmidha/ostoy'
+    
+
+    # https://github.com/redhat-actions/push-to-registry#readme
+    - name: Push to Quay
+      id: push-image
+      uses: redhat-actions/push-to-registry@v2
+      with:
+        image: ${{ steps.build_image_msvc.outputs.image }}
+        tags: ${{ steps.build_image_msvc.outputs.tags }}
+        registry: ${{ env.IMAGE_REGISTRY }}
+        username: ${{ env.IMAGE_REGISTRY_USER }}
+        password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
+
+    - name: Push Frontend image to Quay
+      id: push-image-frontend
+      uses: redhat-actions/push-to-registry@v2
+      with:
+        image: ${{ steps.build_image_frontend.outputs.image }}
+        tags: ${{ steps.build_image_frontend.outputs.tags }}
+        registry: ${{ env.IMAGE_REGISTRY }}
+        username: ${{ env.IMAGE_REGISTRY_USER }}
+        password: ${{ env.IMAGE_REGISTRY_PASSWORD }}
+
+    # The path the image was pushed to is now stored in ${{ steps.push-image.outputs.registry-path }}
+
   rosa-deploy:
     name: ROSA Deployment - Dev
     if: ${{ vars.ROSA_LIVE == 'true' }}
