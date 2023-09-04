@@ -131,7 +131,7 @@ jobs:
       with:
         path_context: 'microservice'
         builder_image: 'registry.access.redhat.com/ubi8/nodejs-16'
-        image: 'gmidha/ostoy-microservice'
+        image: 'augustrh/ostoy-microservice'
     
         #Setup S2i and Build Frontend container image
     - name: Steup and Build
@@ -140,7 +140,7 @@ jobs:
       with:
         path_context: './'
         builder_image: 'registry.access.redhat.com/ubi8/nodejs-16'
-        image: 'gmidha/ostoy'
+        image: 'augustrh/ostoy'
     
 
     # https://github.com/redhat-actions/push-to-registry#readme
