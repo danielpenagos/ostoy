@@ -160,3 +160,6 @@ $ python -m webbrowser "$(oc get route ostoy -o template --template='https://{{.
   * Adds a separate `microservice` sub-deployment
 * Add function to increase load to test HPA
 * Add ACK integration
+
+
+# Testing devspaces :)
