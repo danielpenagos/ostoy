@@ -93,7 +93,7 @@ jobs:
     steps: 
     - name: Build and deploy to quay
       run: |
-        echo "hi"
+        echo "$GITHUB_CONTEXT"
     - name: Build and push to Quay
       uses: juliangruber/sleep-action@v1
       with:
