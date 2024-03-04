@@ -42,7 +42,7 @@ env:
   GCP_LIVE: ${{ vars.GCP_LIVE }}
   ROSA_LIVE: ${{ vars.ROSA_LIVE }}
   # 🖊️ EDIT to set the kube context's namespace after login. Leave blank to use your user's default namespace.
-  OPENSHIFT_NAMESPACE: ""
+  OPENSHIFT_NAMESPACE: ${{ vars.OPENSHIFT_PROJECT }}
   QUAY_FEND_LINK: ${{ secrets.QUAY_FEND_LINK }}
   QUAY_BEND_LINK: ${{ secrets.QUAY_BEND_LINK }}
 
