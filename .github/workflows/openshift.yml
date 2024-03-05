@@ -44,8 +44,8 @@ env:
   # 🖊️ EDIT to set the kube context's namespace after login. Leave blank to use your user's default namespace.
   DEV_NAMESPACE: ostoy-dev
   PROD_NAMESPACE: ostoy-prod
-  QUAY_FEND_LINK: https://quay.io/danielpenagos/ostoy
-  QUAY_BEND_LINK: https://quay.io/danielpenagos/ostoy-microservice
+  QUAY_FEND_LINK: quay.io/danielpenagos/ostoy:latest
+  QUAY_BEND_LINK: quay.io/danielpenagos/ostoy-microservice:latest
 
   # 🖊️ EDIT to set a name for your OpenShift app, or a default one will be generated below.
   APP_NAME: "ostoy-microservice"
