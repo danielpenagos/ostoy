@@ -181,10 +181,10 @@ jobs:
 
   aro-ci-cd:
     name: ARO deployment
-    if: ${{ vars.ARO_LIVE == 'true' }}
+#    if: ${{ vars.ARO_LIVE == 'true' }}
     runs-on: ubuntu-20.04
     environment: ARO_PROD
-    needs: [rosa2-ci-cd, rosa-deploy, image-ci-cd]
+    needs: [rosa-deploy, image-ci-cd]
     # needs: [rosa-deploy, image-ci-cd]
 
     outputs:
@@ -344,7 +344,7 @@ jobs:
 
   rosa2-ci-cd:
     name: ROSA Deployment - Prod
-    if: ${{ vars.ROSA_PROD == 'true' }}
+#    if: ${{ vars.ROSA_PROD == 'true' }}
     runs-on: ubuntu-20.04
     environment: ROSA_PROD
     needs: [rosa-deploy, image-ci-cd]
