@@ -42,10 +42,10 @@ env:
   GCP_LIVE: ${{ vars.GCP_LIVE }}
   ROSA_LIVE: ${{ vars.ROSA_LIVE }}
   # 🖊️ EDIT to set the kube context's namespace after login. Leave blank to use your user's default namespace.
-  DEV_NAMESPACE: ${{ vars.DEV_PROJECT }}
-  PROD_NAMESPACE: ${{ vars.PROD_PROJECT }}
-  QUAY_FEND_LINK: ${{ secrets.QUAY_FEND_LINK }}
-  QUAY_BEND_LINK: ${{ secrets.QUAY_BEND_LINK }}
+  DEV_NAMESPACE: ostoy-dev
+  PROD_NAMESPACE: ostoy-prod
+  QUAY_FEND_LINK: quay.io/danielpenagos/ostoy
+  QUAY_BEND_LINK: quay.io/danielpenagos/ostoy-microservice
 
   # 🖊️ EDIT to set a name for your OpenShift app, or a default one will be generated below.
   APP_NAME: "ostoy-microservice"
