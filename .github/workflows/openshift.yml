@@ -263,84 +263,84 @@ jobs:
         oc set env deployment/ostoy BLUE=true
         oc set env deployment/ostoy BLUEB=true
 
-  gcp-ci-cd:
-    name: OSD-GCP deployment
-    if: ${{ vars.GCP_LIVE == 'true' }}
-    runs-on: ubuntu-20.04
-    environment: GCP_PROD
-    needs: [rosa2-ci-cd, rosa-deploy, image-ci-cd]
-    # needs: [rosa-ci-cd, app-ci-cd]
-    
-    outputs:
-      ROUTE: ${{ steps.deploy-and-expose.outputs.route }}
-      SELECTOR: ${{ steps.deploy-and-expose.outputs.selector }}
-    
-    steps:
-    - name: Install oc
-      uses: redhat-actions/openshift-tools-installer@v1
-      with:
-        oc: 4
-    
-    - name: Log in to OpenShift
-      uses: redhat-actions/oc-login@v1
-      with:
-        openshift_server_url: ${{ env.GCP_SERVER }}
-        openshift_token: ${{ env.GCP_TOKEN }}
-        insecure_skip_tls_verify: true
-        namespace: ${{ env.OPENSHIFT_NAMESPACE }}
-    
-    - name: Create and expose app - backend
-      id: deploy-and-expose
-      uses: redhat-actions/oc-new-app@v1
-      with:
-        app_name: ${{ env.APP_NAME }}
-        # image: ${{ needs.image-ci-cd.outputs.MSVC_IMAGE }}
-        image: ${{ env.QUAY_BEND_LINK }}
-        namespace: ${{ env.OPENSHIFT_NAMESPACE }}
-        port: ${{ env.APP_PORT }}
-
-    - name: Create and expose app - frontend
-      id: deploy-and-expose-frontend
-      uses: redhat-actions/oc-new-app@v1
-      with:
-        app_name: 'ostoy'
-        # image: ${{ needs.image-ci-cd.outputs.FEND_IMAGE }}
-        image: ${{ env.QUAY_FEND_LINK }}
-        namespace: ${{ env.OPENSHIFT_NAMESPACE }}
-        port: ${{ env.APP_PORT }}
-        build_env: 'MICROSERVICE_NAME=OSTOY_MICROSERVICE'
-    
-    - name: Print application URL
-      env:
-        ROUTE: ${{ steps.deploy-and-expose.outputs.route }}
-        SELECTOR: ${{ steps.deploy-and-expose.outputs.selector }}
-      run: |
-        [[ -n ${{ env.ROUTE }} ]] || (echo "Determining application route failed in previous step"; exit 1)
-        echo
-        echo "======================== Your application is available at: ========================"
-        echo ${{ env.ROUTE }}
-        echo "==================================================================================="
-        echo
-        echo "Your app can be taken down with: \"oc delete all --selector='${{ env.SELECTOR }}'\""
-    
-    - name: Print application FRONTEND URL
-      env:
-        ROUTE: ${{ steps.deploy-and-expose-frontend.outputs.route }}
-        SELECTOR: ${{ steps.deploy-and-expose-frontend.outputs.selector }}
-      run: |
-        [[ -n ${{ env.ROUTE }} ]] || (echo "Determining application route failed in previous step"; exit 1)
-        echo
-        echo "======================== Your application is available at: ========================"
-        echo ${{ env.ROUTE }}
-        echo "==================================================================================="
-        echo
-        echo "Your app can be taken down with: \"oc delete all --selector='${{ env.SELECTOR }}'\""  
-        
-    - name: Set OSD environment variable
-      run: |
-        oc set env deployment/ostoy OSD=true
-        oc set env deployment/ostoy GREEN=true
-        oc set env deployment/ostoy GREENB=true
+#  gcp-ci-cd:
+#    name: OSD-GCP deployment
+#    if: ${{ vars.GCP_LIVE == 'true' }}
+#    runs-on: ubuntu-20.04
+#    environment: GCP_PROD
+#    needs: [rosa2-ci-cd, rosa-deploy, image-ci-cd]
+#    # needs: [rosa-ci-cd, app-ci-cd]
+#    
+#    outputs:
+#      ROUTE: ${{ steps.deploy-and-expose.outputs.route }}
+#      SELECTOR: ${{ steps.deploy-and-expose.outputs.selector }}
+#    
+#    steps:
+#    - name: Install oc
+#      uses: redhat-actions/openshift-tools-installer@v1
+#      with:
+#        oc: 4
+#    
+#    - name: Log in to OpenShift
+#      uses: redhat-actions/oc-login@v1
+#      with:
+#        openshift_server_url: ${{ env.GCP_SERVER }}
+#        openshift_token: ${{ env.GCP_TOKEN }}
+#        insecure_skip_tls_verify: true
+#        namespace: ${{ env.OPENSHIFT_NAMESPACE }}
+#    
+#    - name: Create and expose app - backend
+#      id: deploy-and-expose
+#      uses: redhat-actions/oc-new-app@v1
+#      with:
+#        app_name: ${{ env.APP_NAME }}
+#        # image: ${{ needs.image-ci-cd.outputs.MSVC_IMAGE }}
+#        image: ${{ env.QUAY_BEND_LINK }}
+#        namespace: ${{ env.OPENSHIFT_NAMESPACE }}
+#        port: ${{ env.APP_PORT }}
+#
+#    - name: Create and expose app - frontend
+#      id: deploy-and-expose-frontend
+#      uses: redhat-actions/oc-new-app@v1
+#      with:
+#        app_name: 'ostoy'
+#        # image: ${{ needs.image-ci-cd.outputs.FEND_IMAGE }}
+#        image: ${{ env.QUAY_FEND_LINK }}
+#        namespace: ${{ env.OPENSHIFT_NAMESPACE }}
+#        port: ${{ env.APP_PORT }}
+#        build_env: 'MICROSERVICE_NAME=OSTOY_MICROSERVICE'
+#    
+#    - name: Print application URL
+#      env:
+#        ROUTE: ${{ steps.deploy-and-expose.outputs.route }}
+#        SELECTOR: ${{ steps.deploy-and-expose.outputs.selector }}
+#      run: |
+#        [[ -n ${{ env.ROUTE }} ]] || (echo "Determining application route failed in previous step"; exit 1)
+#        echo
+#        echo "======================== Your application is available at: ========================"
+#        echo ${{ env.ROUTE }}
+#        echo "==================================================================================="
+#        echo
+#        echo "Your app can be taken down with: \"oc delete all --selector='${{ env.SELECTOR }}'\""
+#    
+#    - name: Print application FRONTEND URL
+#      env:
+#        ROUTE: ${{ steps.deploy-and-expose-frontend.outputs.route }}
+#        SELECTOR: ${{ steps.deploy-and-expose-frontend.outputs.selector }}
+#      run: |
+#        [[ -n ${{ env.ROUTE }} ]] || (echo "Determining application route failed in previous step"; exit 1)
+#        echo
+#        echo "======================== Your application is available at: ========================"
+#        echo ${{ env.ROUTE }}
+#        echo "==================================================================================="
+#        echo
+#        echo "Your app can be taken down with: \"oc delete all --selector='${{ env.SELECTOR }}'\""  
+#        
+#    - name: Set OSD environment variable
+#      run: |
+#        oc set env deployment/ostoy OSD=true
+#        oc set env deployment/ostoy GREEN=true
+#        oc set env deployment/ostoy GREENB=true
 
   rosa2-ci-cd:
     name: ROSA Deployment - Prod
