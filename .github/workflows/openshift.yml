@@ -355,6 +355,17 @@ jobs:
       SELECTOR: ${{ steps.deploy-and-expose.outputs.selector }}
     
     steps:
+
+    - uses: trstringer/manual-approval@v1
+      with:
+        secret: ${{ github.TOKEN }}
+        approvers: danielpenagos
+        minimum-approvals: 1
+        issue-title: "Deploying to prod from staging"
+        issue-body: "Please approve or deny the deployment."
+        exclude-workflow-initiator-as-approver: false
+        additional-approved-words: ''
+        additional-denied-words: ''
     - name: Install oc
       uses: redhat-actions/openshift-tools-installer@v1
       with:

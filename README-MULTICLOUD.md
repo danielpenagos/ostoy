@@ -55,12 +55,17 @@ echo ARO_TOKEN=$TOKEN
 ---Secrets to set in github actions:
 QUAY_BEND_LINK = quay.io/danielpenagos/ostoy
 QUAY_FEND_LINK = quay.io/danielpenagos/ostoy-microservice
+ROSA_SERVER
+ROSA_TOKEN
+ARO_SERVER
+ARO_TOKEN
+ROSA_SERVER_TWO
+ROSA_SERVER_TWO
 
 envvars:
 ARO_LIVE = true
 ROSA_LIVE = true
-DEV_PROJECT = ostoy-dev
-PROD_PROJECT = ostoy-prod
+
 
 
 
